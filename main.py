@@ -12,7 +12,7 @@ class TerminalMenu:
     student_list = []
     quiz_extenders = []
     user_id_dict = {}
-    instructions = """Enter the number of the quiz to modify or 'q' to quit. Enter "None" to set all quizzes to none.\nEnter 'list' to show the students who will be applied quiz extensions.\nEnter 'run' to extend the quizzes."""
+    instructions = """Enter "none" to set all quizzes to none.\nEnter the number of the quiz to modify or 'q' to quit.\nEnter 'list' to show the students who will be applied quiz extensions.\nEnter 'run' to extend the quizzes."""
     url = ""
     key = ""
 
@@ -29,7 +29,7 @@ class TerminalMenu:
         print("\nQuizzes:")
         for i, quiz in enumerate(self.quiz_extenders, start=1):
             print(f"{i}. {quiz}")
-        print("\nA - Availability, E - Extra Time, B - Both, N - None")
+        print("\nA - Availability, E - Extra Time, B - Both, N - None (Skip)")
         print("New Quizzes are marked with *")
         print(f"\n{self.instructions}")
 

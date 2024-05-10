@@ -201,15 +201,15 @@ class QuizExtender:
         if self.extension_type in ["B", "E"] and not self.is_new:
             extensions = self.create_extensions(user_id_list)
             self.quiz.set_extensions(extensions)
-            # print(f"{self.quiz.title} has been given extra time.")
+            print(f"{self.quiz.title} has been given extra time.")
         if self.extension_type in ["B", "A"]:
             overrides = self.create_availability(user_id_list)
             self.extend_quiz_availability(overrides)
-            # print(f"{self.quiz.title} has had its availability extended.")
+            print(f"{self.quiz.title} has had its availability extended.")
         elif self.extension_type not in ["B", "A", "E"]:
             print(
                 "The extension type has been set incorrectly.\n A - Availability, E - Extra Time, B - Both, N - None"
             )
             return
-        print(f"{self.quiz.title} extended!")
+        # print(f"{self.quiz.title} has been extended!")
         return
