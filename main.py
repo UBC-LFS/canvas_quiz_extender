@@ -146,8 +146,8 @@ class TerminalMenu:
         #     return
 
         quiz_dict = course.get_quizzes()
-        self.user_id_dict = reader.get_student_extensions()
-        self.student_list = course.create_student_list(self.user_id_dict)
+        self.user_id_dict = course.process_dict(reader.get_student_extensions())
+        self.student_list = course.get_student_list()
 
         # def filter_quizzes(quiz_list, quiz_dict):
         #     # for quiz, id in quiz_dict.items():

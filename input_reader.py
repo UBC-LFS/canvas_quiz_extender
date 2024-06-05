@@ -5,7 +5,7 @@ from pypdf import PdfReader
 
 class InputReader:
     folder_path = None
-    df = None
+    user_dict = None
 
     def __init__(self, folder_path):
         self.folder_path = folder_path
@@ -49,7 +49,9 @@ class InputReader:
                 if info:
                     extension_list.append(info)
 
-        return dict(extension_list)
+        self.user_dict = dict(extension_list)
+
+        return self.user_dict
 
     def check_duplicate_students(self):
         duplicates = self.df.duplicated(subset=["Student"])

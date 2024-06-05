@@ -30,17 +30,19 @@ class CourseGetter:
             quiz_dict[new_quiz] = 1
         return quiz_dict
 
-    def create_student_list(self, user_id_dict):
+    def process_dict(self, user_id_dict):
+        ''' filter out non-class id's, create list of student's in dict and student's not in class'''
         students = self.course.get_users(enrollment_type=["student"])
         processed_students = []
+        extension_dict = {}
 
-        # Find student's name in course and replace with id.
+        # Filter out student id not in course, add to unprocessed students.
         def _search_name(student):
-            user_id = student.id
             # print(user_id)
             # print(user_id_dict)
-            if user_id in user_id_dict:
+            if student.id in user_id_dict:
                 processed_students.append(student.id)
+                extension_dict[student.id] = user_id_dict[student.id]
                 self.student_list.append(f"{str(student)}, {user_id_dict[student.id]}")
 
         # Produce dict of user_id: extension
@@ -54,14 +56,15 @@ class CourseGetter:
         for t in threads:
             t.join()
 
-        unprocessed_keys = user_id_dict.keys() - processed_students
-        if unprocessed_keys:
+        unprocessed_students = user_id_dict.keys() - processed_students
+        if unprocessed_students:
             print("These students were not found in the given class:")
-            for key in unprocessed_keys:
-                print(f'Student Number: {key}')
+            for student in unprocessed_students:
+                print(student)
             input("\nPress enter to continue.")
 
-        return self.student_list
+        print(extension_dict)
+        return extension_dict
 
     # # Get user ID and then add name to student list
     # def get_user_ids(self, student_extensions):
