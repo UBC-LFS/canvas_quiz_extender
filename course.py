@@ -30,48 +30,82 @@ class CourseGetter:
             quiz_dict[new_quiz] = 1
         return quiz_dict
 
-    def get_user_ids(self, student_extensions):
-        # Get all users with student role in course
+    def create_student_list(self, user_id_dict):
         students = self.course.get_users(enrollment_type=["student"])
-        processed_students = set()
-        user_id_dict = {}
+        processed_students = []
 
         # Find student's name in course and replace with id.
         def _search_name(student):
-            name = student.name
-            if name in student_extensions:
-                extension = student_extensions[name]
-                if pd.isnull(extension):
-                    print(
-                        f"{name} does not have an extension associated with them. Skipping."
-                    )
-                    return
-                if extension <= 1.0:
-                    print(f"Invalid extension ( <= 1.0) for {name}")
-                    return
-
-                processed_students.add(name)
-                user_id_dict[student.id] = extension
-                self.student_list.append(f"{str(student)}, {extension}")
+            user_id = student.id
+            # print(user_id)
+            # print(user_id_dict)
+            if user_id in user_id_dict:
+                processed_students.append(student.id)
+                self.student_list.append(f"{str(student)}, {user_id_dict[student.id]}")
 
         # Produce dict of user_id: extension
         # (There's probably a faster way to do this)
         threads = []
         for student in students:
+            # print(student)
             t = threading.Thread(target=_search_name, args=(student,))
             t.start()
             threads.append(t)
         for t in threads:
             t.join()
 
-        unprocessed_keys = set(student_extensions.keys()) - processed_students
+        unprocessed_keys = user_id_dict.keys() - processed_students
         if unprocessed_keys:
             print("These students were not found in the given class:")
             for key in unprocessed_keys:
-                print(key)
+                print(f'Student Number: {key}')
             input("\nPress enter to continue.")
 
-        return user_id_dict
+        return self.student_list
+
+    # # Get user ID and then add name to student list
+    # def get_user_ids(self, student_extensions):
+    #     # Get all users with student role in course
+    #     students = self.course.get_users(enrollment_type=["student"])
+    #     processed_students = set()
+    #     user_id_dict = {}
+
+    #     # Find student's name in course and replace with id.
+    #     def _search_name(student):
+    #         name = student.name
+    #         if name in student_extensions:
+    #             extension = student_extensions[name]
+    #             if pd.isnull(extension):
+    #                 print(
+    #                     f"{name} does not have an extension associated with them. Skipping."
+    #                 )
+    #                 return
+    #             if extension <= 1.0:
+    #                 print(f"Invalid extension ( <= 1.0) for {name}")
+    #                 return
+
+    #             processed_students.add(name)
+    #             user_id_dict[student.id] = extension
+    #             self.student_list.append(f"{str(student)}, {extension}")
+
+    #     # Produce dict of user_id: extension
+    #     # (There's probably a faster way to do this)
+    #     threads = []
+    #     for student in students:
+    #         t = threading.Thread(target=_search_name, args=(student,))
+    #         t.start()
+    #         threads.append(t)
+    #     for t in threads:
+    #         t.join()
+
+    #     unprocessed_keys = set(student_extensions.keys()) - processed_students
+    #     if unprocessed_keys:
+    #         print("These students were not found in the given class:")
+    #         for key in unprocessed_keys:
+    #             print(key)
+    #         input("\nPress enter to continue.")
+
+    #     return user_id_dict
 
     def get_course(self):
         return self.course

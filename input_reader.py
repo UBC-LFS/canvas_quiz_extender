@@ -1,33 +1,68 @@
-import pandas as pd
-
+#import pandas as pd
+import os
+import re
+from pypdf import PdfReader
 
 class InputReader:
-    input_csv = None
+    folder_path = None
     df = None
 
-    def __init__(self, input_csv):
-        self.input_csv = input_csv
-        self.df = pd.read_csv(input_csv)
+    def __init__(self, folder_path):
+        self.folder_path = folder_path
+        #self.df = pd.read_csv(input_csv)
 
     def get_student_extensions(self):
         """
-        Creates an dictionary of all assignment IDs and assigns a list containing student IDs for each assignment ID
+        Iterates though given folder of pdf's and extract a dict of user_id and extension from each of them
         """
 
-        return self.df.set_index("Student")["Extension"].to_dict()
+        folder_path = self.folder_path
+        
+        def _extract_info_from_pdf(file_path):
+            try:
+                reader = PdfReader(file_path)
+                text = ''
+                for page in reader.pages:
+                    text += page.extract_text()
+
+                # Regex to find the student number
+                student_number = re.search(r'Student Number:  (\d+)', text)
+                if not student_number:
+                    raise Exception("Could not find student number.")
+
+                # Regex to find the extended time for exams
+                extended_time = re.search(r'Extended time \((\d+\.?\d*)x\) for all exams', text)
+                if not extended_time:
+                    raise Exception("Could not find extension time.")
+                
+                return (int(student_number.group(1)), float(extended_time.group(1)))
+
+            except Exception as e:
+                print(f"Error processing file {file_path}: {e}")
+                return None
+
+        extension_list = []
+        for file_name in os.listdir(folder_path):
+            if file_name.endswith('.pdf'):
+                file_path = os.path.join(folder_path, file_name)
+                info = _extract_info_from_pdf(file_path)
+                if info:
+                    extension_list.append(info)
+
+        return dict(extension_list)
 
     def check_duplicate_students(self):
         duplicates = self.df.duplicated(subset=["Student"])
         return duplicates.any()
 
-    def get_quiz_list(self):
-        try:
-            quiz_list = self.df["Quizzes"].tolist()
-        except KeyError:
-            quiz_list = None
-            # _quiz_query()
+    # def get_quiz_list(self):
+    #     try:
+    #         quiz_list = self.df["Quizzes"].tolist()
+    #     except KeyError:
+    #         quiz_list = None
+    #         # _quiz_query()
 
-        return quiz_list
+    #     return quiz_list
 
     # def _quiz_query():
     #     choice = input("Do you want to extend all quizzes with a time limit? [y/n]")

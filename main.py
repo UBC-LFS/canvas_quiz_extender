@@ -140,38 +140,36 @@ class TerminalMenu:
             print(f"Error detected, check Course ID.")
             return
 
-        reader = InputReader(input_csv)
-        if reader.check_duplicate_students():
-            print(f"Duplicate students detected, use Student ID's instead.")
-            return
-
-        student_extensions = reader.get_student_extensions()
+        reader = InputReader(pdf_folder)
+        # if reader.check_duplicate_students():
+        #     print(f"Duplicate students detected, use Student ID's instead.")
+        #     return
 
         quiz_dict = course.get_quizzes()
-        self.user_id_dict = course.get_user_ids(student_extensions)
-        self.student_list = course.get_student_list()
+        self.user_id_dict = reader.get_student_extensions()
+        self.student_list = course.create_student_list(self.user_id_dict)
 
-        def filter_quizzes(quiz_list, quiz_dict):
-            # for quiz, id in quiz_dict.items():
-            #     print(f"{quiz} + {type(id)}")
-            filtered_dict = {}
-            for quiz, new in quiz_dict.items():
-                if new:
-                    if int(quiz.id) in quiz_list:
-                        filtered_dict[quiz] = 1
-                    else:
-                        continue
-                else:
-                    if quiz.id in quiz_list:
-                        filtered_dict[quiz] = 0
-                    else:
-                        continue
+        # def filter_quizzes(quiz_list, quiz_dict):
+        #     # for quiz, id in quiz_dict.items():
+        #     #     print(f"{quiz} + {type(id)}")
+        #     filtered_dict = {}
+        #     for quiz, new in quiz_dict.items():
+        #         if new:
+        #             if int(quiz.id) in quiz_list:
+        #                 filtered_dict[quiz] = 1
+        #             else:
+        #                 continue
+        #         else:
+        #             if quiz.id in quiz_list:
+        #                 filtered_dict[quiz] = 0
+        #             else:
+        #                 continue
 
-            return filtered_dict
+        #     return filtered_dict
 
-        quiz_list = reader.get_quiz_list()
-        if quiz_list:
-            quiz_dict = filter_quizzes(quiz_list, quiz_dict)
+        # quiz_list = reader.get_quiz_list()
+        # if quiz_list:
+        #     quiz_dict = filter_quizzes(quiz_list, quiz_dict)
 
         extenders = []
         for quiz, new in quiz_dict.items():
@@ -185,7 +183,7 @@ class TerminalMenu:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        input_csv = sys.argv[1]
+        pdf_folder = sys.argv[1]
     else:
         print(
             "Please run the program again with the csv file passed as command-line arguments"
@@ -193,4 +191,4 @@ if __name__ == "__main__":
         sys.exit()
 
     menu = TerminalMenu(url=settings.API_URL, key=settings.API_KEY)
-    menu.load(input_csv)
+    menu.load(pdf_folder)
