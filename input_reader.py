@@ -1,4 +1,4 @@
-#import pandas as pd
+import pandas as pd
 import os
 import re
 from pypdf import PdfReader
@@ -6,17 +6,22 @@ from pypdf import PdfReader
 class InputReader:
     folder_path = None
     user_dict = None
+    df = None
 
-    def __init__(self, folder_path):
-        self.folder_path = folder_path
-        #self.df = pd.read_csv(input_csv)
+    def __init__(self, file):
+        self.file = file
 
     def get_student_extensions(self):
         """
         Iterates though given folder of pdf's and extract a dict of user_id and extension from each of them
         """
 
-        folder_path = self.folder_path
+        file = self.file
+
+        def _extract_info_from_csv(file):
+            self.df = pd.read_csv(file)
+            return self.df.set_index("Student")["Extension"].to_dict()
+
         
         def _extract_info_from_pdf(file_path):
             try:
@@ -42,20 +47,24 @@ class InputReader:
                 return None
 
         extension_list = []
-        for file_name in os.listdir(folder_path):
-            if file_name.endswith('.pdf'):
-                file_path = os.path.join(folder_path, file_name)
-                info = _extract_info_from_pdf(file_path)
-                if info:
-                    extension_list.append(info)
+        if file.endswith('.csv'):
+            self.user_dict = _extract_info_from_csv(file)
 
-        self.user_dict = dict(extension_list)
+        else:
+            for file_name in os.listdir(file):
+                if file_name.endswith('.pdf'):
+                    file_path = os.path.join(folder_path, file_name)
+                    info = _extract_info_from_pdf(file_path)
+                    if info:
+                        extension_list.append(info)
+
+            self.user_dict = dict(extension_list)
 
         return self.user_dict
 
-    # def check_duplicate_students(self):
-    #     duplicates = self.df.duplicated(subset=["Student"])
-    #     return duplicates.any()
+    def check_duplicate_students(self):
+        duplicates = self.df.duplicated(subset=["Student"])
+        return duplicates.any()
 
     # def get_quiz_list(self):
     #     try:
