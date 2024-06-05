@@ -53,9 +53,9 @@ class InputReader:
 
         return self.user_dict
 
-    def check_duplicate_students(self):
-        duplicates = self.df.duplicated(subset=["Student"])
-        return duplicates.any()
+    # def check_duplicate_students(self):
+    #     duplicates = self.df.duplicated(subset=["Student"])
+    #     return duplicates.any()
 
     # def get_quiz_list(self):
     #     try:

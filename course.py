@@ -63,7 +63,6 @@ class CourseGetter:
                 print(student)
             input("\nPress enter to continue.")
 
-        print(extension_dict)
         return extension_dict
 
     # # Get user ID and then add name to student list

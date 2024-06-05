@@ -127,7 +127,7 @@ class TerminalMenu:
 
             # Confirm and apply changes...
 
-    def load(self, input_csv):
+    def load(self, file):
         """Get all the information for the process to run, make the QuizGetters"""  # all of these should probably be split up a bit
         # Prompt the user for a course ID
         # course_id = input("Enter course ID: ")
@@ -140,7 +140,7 @@ class TerminalMenu:
             print(f"Error detected, check Course ID.")
             return
 
-        reader = InputReader(pdf_folder)
+        reader = InputReader(file)
         # if reader.check_duplicate_students():
         #     print(f"Duplicate students detected, use Student ID's instead.")
         #     return
@@ -183,7 +183,7 @@ class TerminalMenu:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        pdf_folder = sys.argv[1]
+        file = sys.argv[1]
     else:
         print(
             "Please run the program again with the csv file passed as command-line arguments"
@@ -191,4 +191,4 @@ if __name__ == "__main__":
         sys.exit()
 
     menu = TerminalMenu(url=settings.API_URL, key=settings.API_KEY)
-    menu.load(pdf_folder)
+    menu.load(file)
