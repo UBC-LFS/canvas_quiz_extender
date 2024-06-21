@@ -53,7 +53,7 @@ class InputReader:
         else:
             for file_name in os.listdir(file):
                 if file_name.endswith('.pdf'):
-                    file_path = os.path.join(folder_path, file_name)
+                    file_path = os.path.join(file, file_name)
                     info = _extract_info_from_pdf(file_path)
                     if info:
                         extension_list.append(info)
