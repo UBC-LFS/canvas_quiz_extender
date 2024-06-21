@@ -6,11 +6,7 @@ Automatically change availability and extend quizzes for students based on CFA a
 ### Requirements:
 * Clone the repo into your preferred IDE, for example, Visual Studio Code
 * Python 3.10 or later - [found here](http://www.python.org/getit/)
-* A [Canvas API token](https://learninganalytics.ubc.ca/for-students/canvas-api/). Create a blank file with no type named "token" in the cloned repo folder, meaning the file does not end with .txt or .py. Paste your generated Canvas API token to the "token" file without any additional characters.
-* All libraries listed in requirements.txt. To get these, simply run a pip install in the terminal:
-```
-pip install -r requirements.txt
-```
+
 **Troubleshooting for Window Users:**
 * Running commands with "pip" or "pip3" heading shows error that the command cannot be found & need to check your path:
     1. In the Window's search bar, find "Edit the system environment variables", a pop up should appear upon clicking it.
@@ -24,6 +20,8 @@ pip install -r requirements.txt
     7. Click "Ok" until all pop ups disappear
 
 ### Creating a .env file
+Create a [Canvas API token](https://learninganalytics.ubc.ca/for-students/canvas-api/). 
+
 Create a .env file in the root directory with the following fields:
 ```
 API_KEY={YOUR API KEY}
@@ -46,26 +44,29 @@ API_URL={YOUR API DOMAIN}
 
 ### Setting up Student Accomodations
 
-Create a .csv file called extensions.csv with three columns:
+#### CSV
+Create a .csv file three columns:
 * Student
 * Extension
-* Quizzes (Optional!)
 
-Student should include the *Full Name* of a student (e.g. John Doe) and Extension should include the extra time in proportion to the original time (e.g. 1.5). The examples would search for a student named John Doe and extend their availability and time by 1.5 times the original amount.
-
-Quizzes is a seperate list of quiz ids that filter out all quizzes that aren't included. They are *optional*.
+Student should include the *Student Number* of a student (e.g. 12345678) and Extension should include the extra time in proportion to the original time (e.g. 1.5). The examples would search for a student named John Doe and extend their availability and time by 1.5 times the original amount.
 
 An example .csv file should look like the following.
 
 ```
-Student,Extension,Quizzes
-Jane Doe,1.25,123456
-John Doe,1.5
-Demi Demo,2.0
-Demilio Demokivich,3.0
+Student,Extension
+357480,1.5
+357399,2.0
+357495,1.25
+456789,1.5
 ```
+#### PDFs
+
+Simply create a folder in the root directory of the canvas_quiz_extender and put in all the PDFs of Student Accomodations from the Center For Accessibility.
+
+The script will extract the student number of each student as well as the extra time given as an accomodation. 
 
 ### Running the Script
 
 * First, open a terminal, then navigate to canvas_quiz_extender.
-* Run the script using "python main.py extensions.csv"
+* Run the script using "python main.py {file_path}" while replacing file_path with the name of the .csv file or folder that your pdf's are stored in.
