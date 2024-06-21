@@ -20,7 +20,7 @@ Automatically change availability and extend quizzes for students based on CFA a
     7. Click "Ok" until all pop ups disappear
 
 ### Creating a .env file
-Create a [Canvas API token](https://learninganalytics.ubc.ca/for-students/canvas-api/). 
+Create a [Canvas API token](https://learninganalytics.ubc.ca/for-students/canvas-api/) and save it for later.
 
 Create a .env file in the root directory with the following fields:
 ```
@@ -45,11 +45,11 @@ API_URL={YOUR API DOMAIN}
 ### Setting up Student Accomodations
 
 #### CSV
-Create a .csv file three columns:
+Create a .csv file with two columns:
 * Student
 * Extension
 
-Student should include the *Student Number* of a student (e.g. 12345678) and Extension should include the extra time in proportion to the original time (e.g. 1.5). The examples would search for a student named John Doe and extend their availability and time by 1.5 times the original amount.
+List the *Student Number* in the Student column and the *Time Accomodation* in the Extension column. (e.g. 12312346, 1.5 for a student with a student number of 12312346 and an accomodation for x1.5 exam time.)
 
 An example .csv file should look like the following.
 
@@ -62,11 +62,9 @@ Student,Extension
 ```
 #### PDFs
 
-Simply create a folder in the root directory of the canvas_quiz_extender and put in all the PDFs of Student Accomodations from the Center For Accessibility.
-
-The script will extract the student number of each student as well as the extra time given as an accomodation. 
+Create a folder in the root directory of the cloned repository. Copy all PDFs from the Centre for Accessibility into the new folder. The script will automatically extract the *Student Number* and *Time Accomodation* of every student.
 
 ### Running the Script
 
 * First, open a terminal, then navigate to canvas_quiz_extender.
-* Run the script using "python main.py {file_path}" while replacing file_path with the name of the .csv file or folder that your pdf's are stored in.
+* Run the script using `python main.py {file_path}`. Replace `{file_path}` with either: the file name of the .csv, or the name of the new folder with the CFA PDFs.
