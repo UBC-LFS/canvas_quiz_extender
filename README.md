@@ -62,7 +62,7 @@ Student,Extension
 ```
 #### PDFs
 
-Create a folder in the root directory of the cloned repository. Copy all PDFs from the Centre for Accessibility into the new folder. The script will automatically extract the *Student Number* and *Time Accomodation* of every student.
+Create a folder in the root directory of the cloned repository. Copy all student accommodation PDFs from the Centre for Accessibility into the new folder. The script will automatically extract the *Student Number* and *Time Accomodation* of every student.
 
 ### Running the Script
 
