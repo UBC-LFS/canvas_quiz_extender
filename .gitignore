@@ -1,3 +1,6 @@
 .env
 extensions.csv
 canvas_testing/
+extensions/
+extension_test/
+test.py

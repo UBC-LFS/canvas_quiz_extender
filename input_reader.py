@@ -31,16 +31,20 @@ class InputReader:
                     text += page.extract_text()
 
                 # Regex to find the student number
-                student_number = re.search(r'Student Number:  (\d+)', text)
-                if not student_number:
+                student_number_match = re.search(r'Student Number:  (\d+)', text)
+                if student_number_match:
+                    student_number = int(student_number_match.group(1))
+                else:
                     raise Exception("Could not find student number.")
 
                 # Regex to find the extended time for exams
-                extended_time = re.search(r'Extended time \((\d+\.?\d*)x\) for all exams', text)
-                if not extended_time:
+                extended_time_match = re.search(r'Extended time \((\d+\.?\d*)x\) for all exams', text)
+                if extended_time_match:
+                    extended_time = float(extended_time_match.group(1))
+                else:
                     raise Exception("Could not find extension time.")
                 
-                return (int(student_number.group(1)), float(extended_time.group(1)))
+                return (student_number, extended_time)
 
             except Exception as e:
                 print(f"Error processing file {file_path}: {e}")
