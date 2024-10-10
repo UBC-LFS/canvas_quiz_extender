@@ -45,9 +45,10 @@ class QuizExtender:
         """
         added_time = int(
             math.ceil(
-                self.time_limit * ((float(extend * 100) - 100) / 100) if extend else 0
+                self.time_limit * extend - self.time_limit if extend else 0
             )
         )
+        
         # rounds up to the nearest multiple of 5
         rounded_time = math.ceil(added_time / 5) * 5
         return added_time

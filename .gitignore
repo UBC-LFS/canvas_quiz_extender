@@ -5,3 +5,5 @@ canvas_testing/
 extensions/
 extension_test/
 test.py
+venv
+data.csv
