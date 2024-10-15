@@ -180,8 +180,11 @@ class TerminalMenu:
         for quiz, new in quiz_dict.items():
             # print(f"Quiz:{quiz}")
             # print(f"New:{new}")
+           
             extenders.append(QuizExtender(quiz, new, course.get_course()))
+
         self.quiz_extenders = extenders
+       
 
         self.run()
 
