@@ -2,7 +2,7 @@ from canvasapi import Canvas
 import math
 from datetime import datetime, timedelta, timezone, time
 import threading
-
+import pytz
 
 class QuizExtender:
     def __str__(self):
@@ -45,9 +45,10 @@ class QuizExtender:
         """
         added_time = int(
             math.ceil(
-                self.time_limit * ((float(extend * 100) - 100) / 100) if extend else 0
+                self.time_limit * extend - self.time_limit if extend else 0
             )
         )
+        
         # rounds up to the nearest multiple of 5
         rounded_time = math.ceil(added_time / 5) * 5
         return added_time
@@ -116,15 +117,52 @@ class QuizExtender:
         returns:
             NULL - POST request is sent to canvas to add assignment overrides to quiz param
         """
-        unlock_time = self.quiz.unlock_at_date
-        lock_time = self.quiz.lock_at_date if self.quiz.lock_at else None
-        due_time = self.quiz.due_at_date if self.quiz.due_at else None
+        print("Is this being printed??")
+        print("Quiz object:", vars(self.quiz))
+
+        if self.quiz.all_dates:
+            first_date_info = self.quiz.all_dates[0]  # Get the first dictionary in the list
+            unlock_time = first_date_info.get('unlock_at', None)
+            lock_time = first_date_info.get('lock_at', None)
+            due_time = first_date_info.get('due_at', None)
+            date_format = "%Y-%m-%dT%H:%M:%SZ"
+            print(unlock_time)
+            print(lock_time)
+            print(due_time)
+            # lock_time = datetime.strptime(lock_time, date_format) 
+            # due_time =  datetime.strptime(due_time, date_format) 
+            # unlock_time = datetime.strptime(unlock_time, date_format) 
+
+            unlock_time = datetime.strptime(unlock_time, date_format).replace(tzinfo=pytz.UTC)
+            lock_time = datetime.strptime(lock_time, date_format).replace(tzinfo=pytz.UTC)
+            due_time = datetime.strptime(due_time, date_format).replace(tzinfo=pytz.UTC)
+
+            local_tz = pytz.timezone("America/Vancouver")
+            unlock_time = unlock_time.astimezone(local_tz)
+            lock_time = lock_time.astimezone(local_tz)
+            due_time = due_time.astimezone(local_tz)  
+
+            print(unlock_time)
+            print(lock_time)
+            print(due_time)
+        else:
+            unlock_time = None
+            lock_time = None
+            due_time = None
+
+
+        # unlock_time = self.quiz.unlock_at_date
+        # lock_time = self.quiz.lock_at_date if self.quiz.lock_at else None
+        # due_time = self.quiz.due_at_date if self.quiz.due_at else None
+
         # turn quiz into assignment so you can add assignment overrides to it
         if not self.is_new:  # classic
             quiz_assignment = self.course.get_assignment(self.quiz.assignment_id)
         else:  # new
             quiz_assignment = self.course.get_assignment(self.quiz.id)
         assignment_overrides = quiz_assignment.get_overrides()
+        print("printing assignment overrides")
+        print( quiz_assignment)
         # clear old overrides
         if assignment_overrides:
             for override in assignment_overrides:
@@ -140,6 +178,7 @@ class QuizExtender:
             extended_lock = (
                 (lock_time + timedelta(minutes=added_time)) if lock_time else None
             )
+            print(extended_lock)
             extended_due = (
                 (due_time + timedelta(minutes=added_time)) if due_time else None
             )

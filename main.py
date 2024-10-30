@@ -16,9 +16,12 @@ class TerminalMenu:
     url = ""
     key = ""
 
+
     def __init__(self, url, key):
         self.url = url
         self.key = key
+
+ 
 
     def display_title(self):
         title = "Canvas Quiz Extender"
@@ -131,7 +134,7 @@ class TerminalMenu:
         """Get all the information for the process to run, make the QuizGetters"""  # all of these should probably be split up a bit
         # Prompt the user for a course ID
         # course_id = input("Enter course ID: ")
-        course_id = 143309
+        course_id = 115472
 
         canvas = Canvas(self.url, self.key)
         try:
@@ -148,6 +151,8 @@ class TerminalMenu:
         quiz_dict = course.get_quizzes()
         self.user_id_dict = course.process_dict(reader.get_student_extensions())
         self.student_list = course.get_student_list()
+
+
 
         # def filter_quizzes(quiz_list, quiz_dict):
         #     # for quiz, id in quiz_dict.items():
@@ -175,8 +180,11 @@ class TerminalMenu:
         for quiz, new in quiz_dict.items():
             # print(f"Quiz:{quiz}")
             # print(f"New:{new}")
+           
             extenders.append(QuizExtender(quiz, new, course.get_course()))
+
         self.quiz_extenders = extenders
+       
 
         self.run()
 
