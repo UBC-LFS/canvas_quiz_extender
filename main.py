@@ -133,13 +133,12 @@ class TerminalMenu:
     def load(self, file):
         """Get all the information for the process to run, make the QuizGetters"""  # all of these should probably be split up a bit
         # Prompt the user for a course ID
-        # course_id = input("Enter course ID: ")
-        course_id = 115472
+        course_id = input("Enter course ID: ")
 
         canvas = Canvas(self.url, self.key)
         try:
             course = CourseGetter(course_id, canvas)
-        except e:
+        except:
             print(f"Error detected, check Course ID.")
             return
 
