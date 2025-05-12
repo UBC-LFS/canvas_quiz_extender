@@ -3,6 +3,7 @@ import pandas as pd
 import threading
 from api_caller import make_request
 
+
 class CourseGetter:
     student_list = []
     id = 0
@@ -31,50 +32,45 @@ class CourseGetter:
         return quiz_dict
 
     def process_dict(self, user_id_dict):
-        ''' filter out non-class id's, create list of student's in dict and student's not in class'''
+        """filter out non-class id's, create list of student's in dict and student's not in class"""
         # students = self.course.get_users(enrollment_type=["student"])
         # print(students)
 
         processed_students = []
         extension_dict = {}
 
+        try:
+            response = make_request(f"courses/{self.id}/users")
+        #  print(response)
 
-        try: 
-             response = make_request(f"courses/{self.id}/users")
-            #  print(response)
-        
         except Exception as e:
             print(f"Error fetching users: {str(e)}")
 
         # student_mapping = {student['sis_user_id']: student['id'] for student in response}
         # print(student_mapping)
 
-
-
-
-
-
         # Filter out student id not in course, add to unprocessed students.
         def _search_name(student):
-           try:
-                sis_user_id = student.get('sis_user_id')
+            try:
+                sis_user_id = student.get("sis_user_id")
                 if sis_user_id is not None:
-                    sis_user_id_int = int(sis_user_id)  
-                    if sis_user_id_int in user_id_dict:
-                        processed_students.append(sis_user_id_int)  
-                        extension_dict[student['id']] = user_id_dict[sis_user_id_int]
-                        self.student_list.append(f"{str(student['name'])}, {user_id_dict[sis_user_id_int]}")
-           except ValueError:
+                    sis_user_id = sis_user_id
+                    if sis_user_id in user_id_dict:
+                        processed_students.append(sis_user_id)
+                        extension_dict[student["id"]] = user_id_dict[sis_user_id]
+                        self.student_list.append(
+                            f"{str(student['name'])}, {user_id_dict[sis_user_id]}"
+                        )
+            except ValueError:
                 print(f"Invalid value for sis_user_id: {sis_user_id}")
-           except Exception as e:
+            except Exception as e:
                 print(f"Error processing student {student}: {e}")
-
 
         # Produce dict of user_id: extension
         # (There's probably a faster way to do this)
         threads = []
         for student in response:
-            # print(student)
+            print(student)
             t = threading.Thread(target=_search_name, args=(student,))
             t.start()
             threads.append(t)
@@ -87,8 +83,6 @@ class CourseGetter:
             for student in unprocessed_students:
                 print(student)
             input("\nPress enter to continue.")
-        
-      
 
         return extension_dict
 

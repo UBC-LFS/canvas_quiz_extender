@@ -3,6 +3,7 @@ import os
 import re
 from pypdf import PdfReader
 
+
 class InputReader:
     folder_path = None
     user_dict = None
@@ -22,28 +23,30 @@ class InputReader:
             self.df = pd.read_csv(file)
             return self.df.set_index("Student")["Extension"].to_dict()
 
-        
         def _extract_info_from_pdf(file_path):
             try:
                 reader = PdfReader(file_path)
-                text = ''
+                text = ""
                 for page in reader.pages:
                     text += page.extract_text()
 
                 # Regex to find the student number
-                student_number_match = re.search(r'Student Number:  (\d+)', text)
+                student_number_match = re.search(r"\b\d{8}\b", text)
                 if student_number_match:
-                    student_number = int(student_number_match.group(1))
+                    student_number = student_number_match.group()
                 else:
                     raise Exception("Could not find student number.")
 
                 # Regex to find the extended time for exams
-                extended_time_match = re.search(r'Extended time \((\d+\.?\d*)x\) for all exams', text)
+                extended_time_match = re.search(
+                    r"Extended time \((\d+\.?\d*)x\) for all exams", text
+                )
                 if extended_time_match:
                     extended_time = float(extended_time_match.group(1))
                 else:
                     raise Exception("Could not find extension time.")
-                
+
+                print(student_number)
                 return (student_number, extended_time)
 
             except Exception as e:
@@ -51,12 +54,12 @@ class InputReader:
                 return None
 
         extension_list = []
-        if file.endswith('.csv'):
+        if file.endswith(".csv"):
             self.user_dict = _extract_info_from_csv(file)
 
         else:
             for file_name in os.listdir(file):
-                if file_name.endswith('.pdf'):
+                if file_name.endswith(".pdf"):
                     file_path = os.path.join(file, file_name)
                     info = _extract_info_from_pdf(file_path)
                     if info:

@@ -35,6 +35,7 @@ API_URL={YOUR API DOMAIN}
 
 * `pip install virtualenv` (if you don't already have virtualenv installed)
 * `virtualenv venv` to create your new environment (called 'venv' here)
+    * Note: for windows, use `python -m virtualenv venv' instead
 * `source venv/bin/activate` (to enter the virtual environment)
 * `pip install -r requirements.txt` (to install the requirements in the current environment)
 
