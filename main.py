@@ -131,7 +131,6 @@ class TerminalMenu:
         """Get all the information for the process to run, make the QuizGetters"""  # all of these should probably be split up a bit
         # Prompt the user for a course ID
         course_id = input("Enter course ID: ")
-        # course_id = 1
 
         canvas = Canvas(self.url, self.key)
         try:
